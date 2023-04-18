@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
+
 
 namespace IEscola.Domain.Entities
 {
-    public class Professor : EntityBase
+    public class Aluno : EntityBase
     {
         public string Nome { get; private set; }
-        public string Cpf { get; private set; }
+        public int NumeroMatricula { get; set; }
         public DateTime? DataNascimento { get; private set; }
-        public IEnumerable<Aluno> Alunos { get; set; }
 
 
-
-        public Professor(int id, string nome, string cpf, DateTime? dataNascimento)
+        public Aluno(int id, string nome, DateTime dataNascimento, int numeroMatricula)
         {
             Id = id;
             Nome = nome;
-            Cpf = cpf;
             DataNascimento = dataNascimento;
+            NumeroMatricula = numeroMatricula;
         }
+
 
     }
 }
