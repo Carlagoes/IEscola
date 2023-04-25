@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IEscola.Domain.Entities
 {
-    public class EntityBase
+    public abstract class EntityBase
     {
         public int Id { get; set; }
         public DateTime DataCadastro { get; private set; }
@@ -13,7 +13,7 @@ namespace IEscola.Domain.Entities
         public string UsuarioCadastro { get; set; }
         public string UsuarioUtimaAlteracao { get; set; }
 
-        public EntityBase()
+        protected EntityBase()
         {
             DataCadastro = DateTime.Now;
             DataUtimaAlteracao = DateTime.Now;
