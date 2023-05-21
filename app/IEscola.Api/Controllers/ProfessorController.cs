@@ -44,7 +44,7 @@ namespace IEscola.Api.Controllers
             return Ok(professor);
         }
 
-        // POST api/<ProfessorController>
+        // POST api/<ProfessorController>/5
         [HttpPost]
         public IActionResult Post([FromBody] Professor professor)
         {

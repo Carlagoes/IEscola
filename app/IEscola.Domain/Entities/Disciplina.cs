@@ -2,7 +2,14 @@
 {
     public class Disciplina : EntityBase
     {
+
         public string Nome { get; set; }
         public string Descricao { get; set; }
+
+        public Disciplina(string nome)
+        {
+            Nome = nome;
+        }
     }
+    
 }
