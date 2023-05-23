@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32819.101
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32802.440
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-API", "1-API", "{934885C6-A17A-48E6-8779-59F45DA5C06B}"
 EndProject
@@ -13,15 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-Infra", "4-Infra", "{8B69
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5-CrossCutting", "5-CrossCutting", "{0BCF6888-53A3-42B8-A988-89051225264B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEscola.CrossCutting", "app\IEscola.CrossCutting\IEscola.CrossCutting.csproj", "{666A1678-E278-4A90-B3D5-9F0ECAE096DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEscola.CrossCutting", "app\IEscola.CrossCutting\IEscola.CrossCutting.csproj", "{666A1678-E278-4A90-B3D5-9F0ECAE096DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEscola.Infra", "app\IEscola.Infra\IEscola.Infra.csproj", "{A36D9901-F9F4-4F7F-AEAC-F54AB5A35E94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEscola.Infra", "app\IEscola.Infra\IEscola.Infra.csproj", "{A36D9901-F9F4-4F7F-AEAC-F54AB5A35E94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEscola.Domain", "app\IEscola.Domain\IEscola.Domain.csproj", "{C30AC0DB-1C2E-40CC-98D1-62951213AB5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEscola.Domain", "app\IEscola.Domain\IEscola.Domain.csproj", "{C30AC0DB-1C2E-40CC-98D1-62951213AB5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEscola.Application", "app\IEscola.Application\IEscola.Application.csproj", "{C61E5DE1-76C3-4401-A9C1-59A7102FBC60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEscola.Application", "app\IEscola.Application\IEscola.Application.csproj", "{C61E5DE1-76C3-4401-A9C1-59A7102FBC60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEscola.Api", "app\IEscola.Api\IEscola.Api.csproj", "{E3560AB7-DB1D-4593-B338-4848821BFB18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEscola.Api", "app\IEscola.Api\IEscola.Api.csproj", "{E3560AB7-DB1D-4593-B338-4848821BFB18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,15 +9,15 @@ using System.Linq;
 namespace IEscola.Api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class ProfessorController : ControllerBase
+    
+    public class ProfessorController : MainController
     {
         private List<Professor> professorList = new List<Professor>
         {
-            new Professor(1, "Antonio", "12345678911", new DateTime(1990, 2, 27 )),
-            new Professor(2, "José", "12345678922", new DateTime(1985, 2, 21 )),
-            new Professor(3, "João", "22245678933", new DateTime(1983, 12, 31 )),
-            new Professor(4, "Maria", "44345678944", new DateTime(1989, 3, 15 ))
+            new Professor(Guid.Parse("91DA7AD7-08DD-4EF0-917F-13DE7DBA690E"), "Antonio", "12345678911", new DateTime(1990, 2, 27 )),
+            new Professor(Guid.Parse("F602AD3F-91A1-45A9-8D14-CBF77EEDAF38"), "José", "12345678922", new DateTime(1985, 2, 21 )),
+            new Professor(Guid.Parse("A165B4F0-CEE2-4647-8C13-A2E0ABB0B906"), "João", "22245678933", new DateTime(1983, 12, 31 )),
+            new Professor(Guid.Parse("470D8DE8-7152-45FD-BFE1-28A5C01D6092"), "Maria", "44345678944", new DateTime(1989, 3, 15 ))
         }; 
 
         // GET: api/<ProfessorController>
@@ -29,9 +29,10 @@ namespace IEscola.Api.Controllers
 
         // GET api/<ProfessorController>/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        //[ProducesResponseType(IEnumerable<Professor>, StatusCode = 200)]
+        public ActionResult Get(Guid id)
         {
-            if (id <= 0)
+            if (Guid.Empty == id)
                 return BadRequest("id deve ser maior que zero");
             
             var professor = professorList.FirstOrDefault(p => p.Id == id);
@@ -53,14 +54,14 @@ namespace IEscola.Api.Controllers
 
         // PUT api/<ProfessorController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Professor professor)
+        public IActionResult Put(Guid id, [FromBody] Professor professor)
         {
             return Ok();
         }
 
         // DELETE api/<ProfessorController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             return Ok();
         }

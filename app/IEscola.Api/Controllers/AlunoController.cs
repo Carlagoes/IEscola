@@ -14,10 +14,10 @@ namespace IEscola.Api.Controllers
     {
         private List<Aluno> alunoList = new List<Aluno>
         {
-            new Aluno(1, "Joao", new DateTime(1984, 3, 20 ), 001),
-            new Aluno(2, "Maria", new DateTime(1993, 7, 03 ), 002),
-            new Aluno(3, "Rita", new DateTime(2000, 9, 20 ), 003),
-            new Aluno(4, "Pedro", new DateTime(1997, 10, 05 ), 004),
+            new Aluno(Guid.Parse("F58623A3-84A2-49C4-98DA-CC9E8B57F948"), "Joao", new DateTime(1984, 3, 20 ), 001),
+            new Aluno(Guid.Parse("754691DB-5B8D-45D7-8AD6-DEBEC27077E1"), "Maria", new DateTime(1993, 7, 03 ), 002),
+            new Aluno(Guid.Parse("7E643558-55BA-4EF5-9785-BCF0DBD8FA02"), "Rita", new DateTime(2000, 9, 20 ), 003),
+            new Aluno(Guid.Parse("582CB327-DC56-4C13-8DB9-923FD7BBE8D3"), "Pedro", new DateTime(1997, 10, 05 ), 004),
         }; 
 
         // GET: api/<AlunoController>
@@ -29,9 +29,9 @@ namespace IEscola.Api.Controllers
 
         // GET api/<AlunoController>
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public ActionResult Get(Guid id)
         {
-            if (id <= 0)
+            if (Guid.Empty == id)
                 return BadRequest("id deve ser maior que zero");
             
             var aluno = alunoList.FirstOrDefault(p => p.Id == id);

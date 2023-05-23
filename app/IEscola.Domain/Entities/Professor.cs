@@ -13,7 +13,7 @@ namespace IEscola.Domain.Entities
 
 
 
-        public Professor(int id, string nome, string cpf, DateTime? dataNascimento)
+        public Professor(Guid id, string nome, string cpf, DateTime? dataNascimento)
         {
             Id = id;
             Nome = nome;
