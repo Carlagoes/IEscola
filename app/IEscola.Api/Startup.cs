@@ -1,3 +1,7 @@
+using IEscola.Application.Interfaces;
+using IEscola.Application.Services;
+using IEscola.Domain.Interfaces;
+using IEscola.Infra.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +37,8 @@ namespace IEscola.Api
                     Description = "Projeto IEscola"
                 });
             });
+            services.AddScoped<IDisciplinaService, DisciplinaService>();
+            services.AddScoped<IDisciplinaRepository, DisciplinaRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

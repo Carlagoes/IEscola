@@ -5,37 +5,43 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using IEscola.Infra.Repositories;
+using IEscola.Application.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace IEscola.Api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class DisciplinaController : ControllerBase
+    public class DisciplinaController : MainController
     {
-        
+        private readonly IDisciplinaService _service;
+
+        public DisciplinaController(IDisciplinaService service)
+        {
+            _service = service;
+        }
+
 
         // GET: api/<DisciplinaController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Disciplina>), StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Disciplina>> Get()
         {
-            var repository = new DisciplinaRepository();
-            var list = repository.Get();
+            var list = _service.Get();
 
             return Ok(list);
         }
 
         // GET api/<DisciplinaController>/5
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(IEnumerable<Disciplina>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Disciplina), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public ActionResult Get(Guid id)
         {
             if ( Guid.Empty  == id)
                 return BadRequest("id invalido");
 
-            var repository = new DisciplinaRepository();
-            var disciplina = repository.Get(id);
+            
+            var disciplina = _service.Get(id);
 
             return Ok(disciplina);
         }
@@ -44,10 +50,9 @@ namespace IEscola.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(Disciplina), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] Disciplina disciplina)
+        public IActionResult Post([FromBody] Disciplina disciplina, [FromHeader, Required] DadosLigacao dadosLigacao)
         {
-            var repository = new DisciplinaRepository();
-            repository.Insert(disciplina);
+            _service.Insert(disciplina);
 
             return Ok(disciplina);
         }
@@ -58,8 +63,7 @@ namespace IEscola.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Put(Guid id, [FromBody] Disciplina disciplina)
         {
-            var repository = new DisciplinaRepository();
-            repository.Update(id, disciplina);
+            _service.Update(id, disciplina);
 
             return Ok(disciplina);
         }
@@ -70,10 +74,9 @@ namespace IEscola.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Delete(Guid id)
         {
-            var repository = new DisciplinaRepository();
-            var disciplina = repository.Get(id);
+            var disciplina = _service.Get(id);
 
-            repository.Delete(disciplina);
+            _service.Delete(disciplina);
 
             return Ok();
         }

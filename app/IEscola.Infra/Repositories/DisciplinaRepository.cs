@@ -1,4 +1,5 @@
 ﻿using IEscola.Domain.Entities;
+using IEscola.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace IEscola.Infra.Repositories
 {
-    public class DisciplinaRepository
+    public class DisciplinaRepository : IDisciplinaRepository
     {
         private readonly List<Disciplina> disciplinaList = new List<Disciplina>
         {
