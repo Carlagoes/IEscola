@@ -23,29 +23,26 @@ namespace IEscola.Application.Services
             return list;
         }
 
-        void IDisciplinaService.Delete(Disciplina disciplina)
+        public Disciplina Get(Guid id)
         {
-            throw new NotImplementedException();
+            var disciplina = _repository.Get(id);
+            return disciplina;
         }
 
-        IEnumerable<Disciplina> IDisciplinaService.Get()
+        public void Insert(Disciplina disciplina)
         {
-            throw new NotImplementedException();
+            _repository.Insert(disciplina);
         }
 
-        Disciplina IDisciplinaService.Get(Guid id)
+
+        public void Update(Guid id, Disciplina disciplina)
         {
-            throw new NotImplementedException();
+            _repository.Update(id, disciplina);
         }
 
-        void IDisciplinaService.Insert(Disciplina disciplina)
+        public void Delete( Disciplina disciplina)
         {
-            throw new NotImplementedException();
-        }
-
-        void IDisciplinaService.Update(Guid id, Disciplina disciplina)
-        {
-            throw new NotImplementedException();
+            _repository.Delete(disciplina);
         }
     }
 }

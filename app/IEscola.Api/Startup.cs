@@ -29,7 +29,16 @@ namespace IEscola.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(s => {
+            ConfigureSwagger(services);
+
+            services.AddIEscolaServices(Configuration);
+        }
+
+        private static void ConfigureSwagger(IServiceCollection services)
+        {
+            
+            services.AddSwaggerGen(s =>
+            {
                 s.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Title = "Projeto IEscola",
@@ -37,23 +46,23 @@ namespace IEscola.Api
                     Description = "Projeto IEscola"
                 });
             });
-            services.AddScoped<IDisciplinaService, DisciplinaService>();
-            services.AddScoped<IDisciplinaRepository, DisciplinaRepository>();
         }
 
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(o =>
+                {
+                    o.SwaggerEndpoint("/swagger/v1/swagger.json", "IEscola Project V1");
+                });
+
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI(o =>
-            {
-                o.SwaggerEndpoint("/swagger/v1/swagger.json", "IEscola Project V1");
-            });
 
             app.UseRouting();
 

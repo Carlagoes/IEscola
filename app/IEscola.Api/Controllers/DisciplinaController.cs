@@ -24,7 +24,7 @@ namespace IEscola.Api.Controllers
         // GET: api/<DisciplinaController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Disciplina>), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Disciplina>> Get()
+        public ActionResult Get()
         {
             var list = _service.Get();
 
