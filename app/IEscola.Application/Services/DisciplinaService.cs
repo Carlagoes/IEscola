@@ -3,7 +3,6 @@ using IEscola.Domain.Entities;
 using IEscola.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 
 namespace IEscola.Application.Services
