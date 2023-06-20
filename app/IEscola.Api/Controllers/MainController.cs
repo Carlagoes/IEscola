@@ -25,11 +25,13 @@ namespace IEscola.Api.Controllers
 
         protected ActionResult SimpleResponse(object result = null)
         {
-            if(OperacaoValida())
+            if (OperacaoValida())
             {
-                return Ok(new SimpleResponseObject { 
-                    Success = true, 
-                    Data = result});
+                return Ok(new SimpleResponseObject
+                {
+                    Success = true,
+                    Data = result
+                });
             }
 
             return BadRequest(new SimpleResponseObject
@@ -49,6 +51,12 @@ namespace IEscola.Api.Controllers
             });
         }
 
+        protected ActionResult SimpleResponse(ModelStateDictionary modelSate)
+        {
+            if (!modelSate.IsValid) NotificarErroModelInvalida(modelSate);
+            return SimpleResponse();
+        }
+
         private void NotificarErroModelInvalida(ModelStateDictionary modelState)
         {
             var errors = modelState.Values.SelectMany(e => e.Errors);
@@ -64,5 +72,8 @@ namespace IEscola.Api.Controllers
         {
             _notificador.Handle(new Notificacao(mensagem));
         }
+
+
+
     }
 }

@@ -21,7 +21,7 @@ namespace IEscola.Api.Controllers
             new Professor(Guid.Parse("470D8DE8-7152-45FD-BFE1-28A5C01D6092"), "Maria", "44345678944", new DateTime(1989, 3, 15 ))
         };
 
-        public ProfessorController(INotificador notificator)
+        public ProfessorController(INotificador notificador) : base(notificador)
         {
 
         }

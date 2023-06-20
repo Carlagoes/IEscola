@@ -13,6 +13,8 @@
     <ProjectReference Include="..\IEscola.Domain\IEscola.Domain.csproj" />
     <ProjectReference Include="..\IEscola.Infra\IEscola.Infra.csproj" />
   </ItemGroup>
+	
+	
 
 	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
