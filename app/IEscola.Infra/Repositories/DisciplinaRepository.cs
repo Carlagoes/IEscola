@@ -36,13 +36,11 @@ namespace IEscola.Infra.Repositories
             disciplinaList.Add(disciplina);
         }
 
-        public void Update(Guid id, Disciplina disciplina)
+        public void Update(Disciplina disciplina)
         {
-            var disc = Get(id);
+            var disc = Get(disciplina.Id);
 
             disciplinaList.Remove(disc);
-
-            disciplina.Id = id;
 
             disciplinaList.Add(disciplina);
         }
