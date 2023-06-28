@@ -8,5 +8,7 @@ namespace IEscola.Application.HttpObjects.Disciplina.Response
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public bool Ativo { get; set; }
+
+        
     }
 }

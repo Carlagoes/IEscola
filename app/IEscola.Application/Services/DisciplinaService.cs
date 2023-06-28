@@ -45,7 +45,7 @@ namespace IEscola.Application.Services
         }
 
 
-        public DisciplinaResponse Insert(DisciplinaUpdateRequest disciplinaRequest)
+        public DisciplinaResponse Insert(DisciplinaInsertRequest disciplinaRequest)
         {
             //Validar a disciplina
             if(string.IsNullOrWhiteSpace(disciplinaRequest.Nome))

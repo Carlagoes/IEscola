@@ -10,8 +10,8 @@ namespace IEscola.Application.Interfaces
     {
         IEnumerable<DisciplinaResponse> Get();
         DisciplinaResponse Get(Guid id);
-        DisciplinaResponse Insert(DisciplinaInsertRequest disciplina);
-        DisciplinaResponse Update(DisciplinaUpdateRequest disciplina);
+        DisciplinaResponse Insert(DisciplinaInsertRequest disciplinaRequest);
+        DisciplinaResponse Update(DisciplinaUpdateRequest disciplinaRequest);
         void Delete(Disciplina disciplina);
 
     }

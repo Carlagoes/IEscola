@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Http;
 using IEscola.Application.Interfaces;
-
 using IEscola.Api.DefaultResponse;
 using IEscola.Application.HttpObjects.Disciplina.Response;
 using IEscola.Application.HttpObjects.Disciplina.Request;
@@ -50,6 +49,7 @@ namespace IEscola.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Post([FromBody] DisciplinaInsertRequest disciplina)
         {
+            if (!ModelState.IsValid) return SimpleResponse(ModelState);
             var response = _service.Insert(disciplina);
 
             return SimpleResponse(response);
@@ -61,6 +61,7 @@ namespace IEscola.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Put([FromBody] DisciplinaUpdateRequest disciplina)
         {
+            if (!ModelState.IsValid) return SimpleResponse(ModelState);
             var response = _service.Update(disciplina);
 
             return SimpleResponse(response);
