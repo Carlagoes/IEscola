@@ -1,5 +1,6 @@
 ﻿using IEscola.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using IEscola.Api.Filters;
 using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Http;
@@ -47,6 +48,7 @@ namespace IEscola.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [AuthorizationActionFilterAsync]
         public IActionResult Post([FromBody] DisciplinaInsertRequest disciplina)
         {
             if (!ModelState.IsValid) return SimpleResponse(ModelState);
