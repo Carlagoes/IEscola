@@ -1,5 +1,4 @@
-﻿using IEscola.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using IEscola.Api.Filters;
 using System.Collections.Generic;
 using System;
@@ -12,6 +11,7 @@ using IEscola.Application.HttpObjects.Disciplina.Request;
 namespace IEscola.Api.Controllers
 {
     [Route("api/[controller]")]
+    [AuthorizationActionFilterAsync]
     public class DisciplinaController : MainController
     {
         private readonly IDisciplinaService _service;
@@ -23,7 +23,6 @@ namespace IEscola.Api.Controllers
         }
 
 
-        // GET: api/<DisciplinaController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<DisciplinaResponse>), StatusCodes.Status200OK)]
         public ActionResult Get()
@@ -33,7 +32,6 @@ namespace IEscola.Api.Controllers
             return SimpleResponse(list);
         }
 
-        // GET api/<DisciplinaController>/5
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
@@ -44,11 +42,9 @@ namespace IEscola.Api.Controllers
             return SimpleResponse(disciplina);
         }
 
-        // POST api/<DisciplinaController>/5
         [HttpPost]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [AuthorizationActionFilterAsync]
         public IActionResult Post([FromBody] DisciplinaInsertRequest disciplina)
         {
             if (!ModelState.IsValid) return SimpleResponse(ModelState);
@@ -57,7 +53,6 @@ namespace IEscola.Api.Controllers
             return SimpleResponse(response);
         }
 
-        // PUT api/<DisciplinaController>/5
         [HttpPut()]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -69,15 +64,12 @@ namespace IEscola.Api.Controllers
             return SimpleResponse(response);
         }
 
-        // DELETE api/<DisciplinaController>/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Delete(Guid id)
-        {
-            var disciplina = _service.Get(id);
-
-            //_service.Delete(disciplina);
+        { 
+            _service.Delete(id);
 
             return SimpleResponse();
         }

@@ -14,16 +14,20 @@ namespace IEscola.Api
         {
             //container de DI
             services.AddHttpContextAccessor();
-            var settings = configuration.GetSection("Settings").Get<Settings>();
+            //var settings = configuration.GetSection("Settings").Get<Settings>();
             services.Configure<Settings>(configuration.GetSection("Settings"));
             services.AddSingleton<ISettings, Settings>();
             services.AddScoped<ISettingsService, SettingsService>();
 
             //Services
             services.AddScoped<IDisciplinaService, DisciplinaService>();
+            services.AddScoped<IProfessorService, ProfessorService>();
+            services.AddScoped<IAlunoService, AlunoService>();
 
             //Repositories
             services.AddScoped<IDisciplinaRepository, DisciplinaRepository>();
+            services.AddSingleton<IProfessorRepository, ProfessorRepository>();
+            services.AddSingleton<IAlunoRepository, AlunoRepository>();
 
             //Outros Objetos
             services.AddScoped<INotificador, Notificador>();

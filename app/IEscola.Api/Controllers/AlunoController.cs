@@ -3,61 +3,84 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using IEscola.Api.Filters;
+using IEscola.Application.Interfaces;
+using IEscola.Api.DefaultResponse;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using IEscola.Application.HttpObjects.Aluno.Response;
+using IEscola.Application.HttpObjects.Aluno.Request;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace IEscola.Api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class AlunoController : ControllerBase
+    [AuthorizationActionFilterAsync]
+    public class AlunoController : MainController
     {
-        private List<Aluno> alunoList = new List<Aluno>
-        {
-            new Aluno(Guid.Parse("F58623A3-84A2-49C4-98DA-CC9E8B57F948"), "Joao", new DateTime(1984, 3, 20 ), 001),
-            new Aluno(Guid.Parse("754691DB-5B8D-45D7-8AD6-DEBEC27077E1"), "Maria", new DateTime(1993, 7, 03 ), 002),
-            new Aluno(Guid.Parse("7E643558-55BA-4EF5-9785-BCF0DBD8FA02"), "Rita", new DateTime(2000, 9, 20 ), 003),
-            new Aluno(Guid.Parse("582CB327-DC56-4C13-8DB9-923FD7BBE8D3"), "Pedro", new DateTime(1997, 10, 05 ), 004),
-        }; 
+        private readonly IAlunoService _service;
 
-        // GET: api/<AlunoController>
-        [HttpGet]
-        public ActionResult<IEnumerable<Aluno>> Get()
+        public AlunoController(INotificador notificador, IAlunoService service) : base(notificador)
         {
-            return Ok(alunoList);
+            _service = service;
         }
 
-        // GET api/<AlunoController>
+        [HttpGet]
+        [ProducesResponseType(typeof(SimpleResponseObject<IEnumerable<AlunoResponse>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get()
+        {
+            var list = await _service.Get();
+            return SimpleResponse(list);
+        }
+
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(SimpleResponseObject<AlunoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
         public ActionResult Get(Guid id)
         {
             if (Guid.Empty == id)
-                return BadRequest("id deve ser maior que zero");
+                return BadRequest("id inválido");
             
-            var aluno = alunoList.FirstOrDefault(p => p.Id == id);
+            var aluno = _service.Get(id);
 
-            return Ok(aluno);
+            return SimpleResponse(aluno);
         }
 
-        // POST api/<AlunoController>/5
         [HttpPost]
-        public IActionResult Post([FromBody] Aluno aluno)
+        [ProducesResponseType(typeof(SimpleResponseObject<AlunoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
+        public IActionResult Post([FromBody] AlunoInsertRequest aluno)
         {
-            return Ok();
+            if (!ModelState.IsValid) return SimpleResponse(ModelState);
+
+            var response = _service.Insert(aluno);
+
+            return SimpleResponse(response);
         }
 
-        // PUT api/<AlunoController>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Aluno aluno)
+        [HttpPut]
+        [ProducesResponseType(typeof(SimpleResponseObject<AlunoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
+        public IActionResult Put([FromBody] AlunoUpdateRequest aluno)
         {
-            return Ok();
+            if (!ModelState.IsValid) return SimpleResponse(ModelState);
+
+            var response = _service.Update(aluno);
+
+            return SimpleResponse(response);
         }
 
-        // DELETE api/<AlunoController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
+        public IActionResult Delete(Guid id)
         {
-            return Ok();
+            _service.Delete(id);
+
+            return SimpleResponse();
         }
+
+        
     }
 }
