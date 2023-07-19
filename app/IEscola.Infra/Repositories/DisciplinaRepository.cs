@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IEscola.Infra.Repositories
 {
     public class DisciplinaRepository : IDisciplinaRepository
     {
-        private readonly List<Disciplina> disciplinaList = new List<Disciplina>
+        private readonly List<Disciplina> _disciplinaList = new List<Disciplina>
         {
             new Disciplina(Guid.Parse("9F119207-3ED2-41B2-AABA-B9D94FB43937"), "Português", "A mais Importante"),
             new Disciplina(Guid.Parse("6060BFC6-6311-473E-827E-FFD7C9A7B260"), "Matemática", "A melhor de todas"),
@@ -21,33 +22,34 @@ namespace IEscola.Infra.Repositories
 
         };
 
-        public IEnumerable<Disciplina> Get()
+        public async Task<IEnumerable<Disciplina>> GetAsync()
         {
-            return disciplinaList;
+            return await Task.FromResult(_disciplinaList);
         }
 
-        public Disciplina Get(Guid id)
+        public async Task<Disciplina> GetAsync(Guid id)
         {
-            return disciplinaList.FirstOrDefault(d => d.Id == id);
+            await Task.Delay(1_000);
+            return await Task.FromResult(_disciplinaList.FirstOrDefault(d => d.Id == id));
         }
 
-        public void Insert(Disciplina disciplina)
+        public async Task InsertAsync(Disciplina disciplina)
         {
-            disciplinaList.Add(disciplina);
+            await Task.Run(() => _disciplinaList.Add(disciplina));
         }
 
-        public void Update(Disciplina disciplina)
+        public async Task UpdateAsync(Disciplina disciplina)
         {
-            var disc = Get(disciplina.Id);
+            var disc = await GetAsync(disciplina.Id);
 
-            disciplinaList.Remove(disc);
+            await DeleteAsync(disc);
 
-            disciplinaList.Add(disciplina);
+            await InsertAsync(disciplina);
         }
 
-        public void Delete(Disciplina disciplina)
+        public async Task DeleteAsync(Disciplina disciplina)
         {
-            disciplinaList.Remove(disciplina);
+            await Task.Run(() => _disciplinaList.Remove(disciplina));
         }
     }
 }

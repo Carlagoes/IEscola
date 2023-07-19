@@ -7,6 +7,7 @@ using IEscola.Application.Interfaces;
 using IEscola.Api.DefaultResponse;
 using IEscola.Application.HttpObjects.Disciplina.Response;
 using IEscola.Application.HttpObjects.Disciplina.Request;
+using System.Threading.Tasks;
 
 namespace IEscola.Api.Controllers
 {
@@ -25,9 +26,10 @@ namespace IEscola.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<DisciplinaResponse>), StatusCodes.Status200OK)]
-        public ActionResult Get()
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetAsync ()
         {
-            var list = _service.Get();
+            var list = await _service.GetAsync(); 
 
             return SimpleResponse(list);
         }
@@ -35,9 +37,10 @@ namespace IEscola.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status400BadRequest)]
-        public ActionResult Get(Guid id)
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetAsync(Guid id)
         {
-             var disciplina = _service.Get(id);
+             var disciplina = await _service.GetAsync(id);
 
             return SimpleResponse(disciplina);
         }
@@ -45,10 +48,11 @@ namespace IEscola.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] DisciplinaInsertRequest disciplina)
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> PostAsync([FromBody] DisciplinaInsertRequest disciplina)
         {
             if (!ModelState.IsValid) return SimpleResponse(ModelState);
-            var response = _service.Insert(disciplina);
+            var response = await _service.InsertAsync(disciplina);
 
             return SimpleResponse(response);
         }
@@ -56,20 +60,21 @@ namespace IEscola.Api.Controllers
         [HttpPut()]
         [ProducesResponseType(typeof(SimpleResponseObject<DisciplinaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult Put([FromBody] DisciplinaUpdateRequest disciplina)
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> PutAsync([FromBody] DisciplinaUpdateRequest disciplina)
         {
             if (!ModelState.IsValid) return SimpleResponse(ModelState);
-            var response = _service.Update(disciplina);
+            var response = await _service.UpdateAsync(disciplina);
 
             return SimpleResponse(response);
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult Delete(Guid id)
-        { 
-            _service.Delete(id);
+        [ProducesResponseType(typeof(SimpleResponseObject), StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            await _service.DeleteAsync(id);
 
             return SimpleResponse();
         }

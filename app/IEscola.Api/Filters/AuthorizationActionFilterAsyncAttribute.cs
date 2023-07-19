@@ -15,7 +15,7 @@ namespace IEscola.Api.Filters
         {
             var _settingsService = (ISettingsService)context.HttpContext.RequestServices.GetService(typeof(ISettingsService));
 
-            if(!context.HttpContext.Request.Headers.TryGetValue(API_KEY, out var extractedApiKey))
+            if (!context.HttpContext.Request.Headers.TryGetValue(API_KEY, out var extractedApiKey))
             {
                 MakeErroApiKeyNaoPreenchida(context);
                 return;
@@ -30,7 +30,7 @@ namespace IEscola.Api.Filters
                 MakeErroTokenInvalido(context);
                 return;
             }
-            if (!await TokenIsValid(token))
+            if (!await TokenIsValidAsync(token))
             {
                 MakeErroTokenInvalido(context);
                 return;
@@ -40,14 +40,22 @@ namespace IEscola.Api.Filters
 
         }
 
-        public async Task<bool> TokenIsValid(string token)
+        public async Task<bool> TokenIsValidAsync(string token)
         {
-            var flurResponse = await "http://localhost:3683/api/Auth/authenticated"
-                .AllowAnyHttpStatus()
-                .WithOAuthBearerToken(token.ToCleanToken())
-                .GetAsync();
+            try
+            {
+                var flurResponse = await "http://localhost:3683/api/Auth/authenticated"
+                        .AllowAnyHttpStatus()
+                        .WithOAuthBearerToken(token.ToCleanToken())
+                        .GetAsync();
 
-            return flurResponse.StatusCode >= 200 && flurResponse.StatusCode < 300;
+                return flurResponse.StatusCode >= 200 && flurResponse.StatusCode < 300;
+            }
+            catch (FlurlHttpException ex)
+            {
+                Console.WriteLine($"Exception com statusCode: {ex.StatusCode}");
+                return false;
+            }
 
         }
 
@@ -69,6 +77,6 @@ namespace IEscola.Api.Filters
             };
         }
 
-        
+
     }
 }

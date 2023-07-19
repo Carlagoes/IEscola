@@ -23,14 +23,14 @@ namespace IEscola.Application.Services
             _professorRepository = professorRepository;
         }
 
-        public async Task<IEnumerable<AlunoResponse>> Get()
+        public async Task<IEnumerable<AlunoResponse>> GetAsync()
         {
-            var list = await _repository.Get();
+            var list = await _repository.GetAsync();
 
             return list.Select(d => Map(d));
         }
 
-        public AlunoResponse Get(Guid id)
+        public async Task<AlunoResponse> GetAsync(Guid id)
         {
             if (Guid.Empty == id)
             {
@@ -38,7 +38,7 @@ namespace IEscola.Application.Services
                 return default;
             }
 
-            var aluno = _repository.Get(id);
+            var aluno = await _repository.GetAsync(id);
 
             if (aluno is null)
             {
@@ -50,7 +50,30 @@ namespace IEscola.Application.Services
             return Map(aluno);
         }
 
-        public AlunoResponse Insert(AlunoInsertRequest alunoRequest)
+        public async Task<IEnumerable<AlunoResponse>> GetByProfessorIdAsync(Guid professorId)
+        {
+            if (Guid.Empty == professorId)
+            {
+                NotificarErro("id inválido");
+                return default;
+            }
+
+            // Validar existencia de professor
+            var prof = _professorRepository.GetAsync(professorId);
+            if (prof is null)
+            {
+                NotificarErro("Professor não encontrado");
+                return default;
+            }
+
+            var alunos = await _repository.GetByProfessorIdAsync(professorId);
+
+            // Retornar
+            return alunos.Select(a => Map(a));
+        }
+
+
+        public async Task<AlunoResponse> InsertAsync(AlunoInsertRequest alunoRequest)
         {
             // Validar a Professor
             if (string.IsNullOrWhiteSpace(alunoRequest.Nome))
@@ -63,7 +86,7 @@ namespace IEscola.Application.Services
                 return default;
 
             // Validar existencia de professor
-            var prof = _professorRepository.Get(alunoRequest.ProfessorId);
+            var prof = await _professorRepository.GetAsync(alunoRequest.ProfessorId);
             if (prof is null)
             {
                 NotificarErro("Professor não encontrado");
@@ -77,15 +100,15 @@ namespace IEscola.Application.Services
             { 
                 DataUtimaAlteracao = DateTime.Now, UsuarioUtimaAlteracao = "antonio", UsuarioCadastro = "antonio"
             };
-            
+
             // Processar
-            _repository.Insert(aluno);
+            await _repository.InsertAsync(aluno);
 
             // Retornar
             return Map(aluno);
         }
 
-        public AlunoResponse Update(AlunoUpdateRequest alunoRequest)
+        public async Task<AlunoResponse> UpdateAsync(AlunoUpdateRequest alunoRequest)
         {
             // Validar a Professor
 
@@ -98,15 +121,19 @@ namespace IEscola.Application.Services
             if (alunoRequest.NumeroMatricula <= 0)
                 NotificarErro("Número matrícula deve ser maior que zero");
 
+            // Aluno deve ser maior que 1 ano
+            if (alunoRequest.DataNascimento >= DateTime.Today.AddYears(-1)) 
+                NotificarErro("Data de nascimento inválida");
+
             if (TemNotificacao())
                 return default;
 
             // Validar se a Professor do Id existe
-            var aln = Get(alunoRequest.Id);
+            var aln = await GetAsync(alunoRequest.Id);
             if (aln is null) return default;
 
             // Validar existencia de professor
-            var prof = _professorRepository.Get(alunoRequest.ProfessorId);
+            var prof = await _professorRepository.GetAsync(alunoRequest.ProfessorId);
             if (prof is null)
             {
                 NotificarErro("Professor não encontrado");
@@ -125,21 +152,21 @@ namespace IEscola.Application.Services
             else
                 aluno.Inativar();
 
-            _repository.Update(aluno);
+            await _repository.UpdateAsync(aluno);
 
             return Map(aluno);
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var aluno = _repository.Get(id);
+            var aluno = await _repository.GetAsync(id);
 
             if (aluno is null)
             {
                 NotificarErro("Aluno não encontrado");
                 return;
             }
-            _repository.Delete(aluno);
+            await _repository.DeleteAsync(aluno);
         }
 
         #region Private Methods

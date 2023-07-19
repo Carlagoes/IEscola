@@ -16,7 +16,7 @@ namespace IEscola.Application.HttpObjects.Professor.Request
         public string Cpf { get; set; }
 
         [Required(ErrorMessage = "DataNascimento não preenchido.")]
-        [DataType(DataType.DateTime, ErrorMessage = "Data em formato inválido")]
+        [DataType(DataType.DateTime, ErrorMessage = "DataNascimento em formato inválido")]
         public DateTime DataNascimento { get; set; }
 
         [Required(ErrorMessage = "Tratamento não preenchido.")]
@@ -24,5 +24,7 @@ namespace IEscola.Application.HttpObjects.Professor.Request
         [MaxLength(15, ErrorMessage = "Tratamento deve ter menos que 15 caracteres")]
         public string Tratamento { get; set; }
 
+        [Required(ErrorMessage = "DisciplinaIdId não preenchido.")]
+        public Guid DisciplinaId { get; set; }
     }
 }

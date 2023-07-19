@@ -2,16 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IEscola.Domain.Interfaces
 {
     public interface IProfessorRepository
     {
-        IEnumerable<Professor> Get();
-        Professor Get(Guid id);
-
-        void Insert(Professor professor);
-        void Update(Professor professor);
-        void Delete(Professor professor);
+        Task<IEnumerable<Professor>> GetAsync();
+        Task<Professor> GetAsync(Guid id);
+        Task InsertAsync(Professor professor);
+        Task UpdateAsync(Professor professor);
+        Task DeleteAsync(Professor professor);
     }
 }

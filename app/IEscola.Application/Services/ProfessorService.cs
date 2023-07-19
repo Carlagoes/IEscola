@@ -1,4 +1,6 @@
-﻿using IEscola.Application.HttpObjects.Professor.Request;
+﻿using IEscola.Application.HttpObjects.Aluno.Response;
+using IEscola.Application.HttpObjects.Disciplina.Response;
+using IEscola.Application.HttpObjects.Professor.Request;
 using IEscola.Application.HttpObjects.Professor.Response;
 using IEscola.Application.Interfaces;
 using IEscola.Domain.Entities;
@@ -13,33 +15,28 @@ namespace IEscola.Application.Services
     public class ProfessorService : ServiceBase, IProfessorService
     {
         private readonly IProfessorRepository _repository;
+        private readonly IDisciplinaRepository _disciplinaRepository;
+        private readonly IAlunoRepository _alunoRepository;
 
-        public ProfessorService(IProfessorRepository repository, INotificador notificador) : base(notificador)
+        public ProfessorService(IProfessorRepository repository, INotificador notificador,
+            IDisciplinaRepository disciplinaRepository,
+            IAlunoRepository alunoRepository) : base(notificador)
         {
             _repository = repository;
+            _disciplinaRepository = disciplinaRepository;
+            _alunoRepository = alunoRepository;
         }
 
-        public void Delete(Guid id)
+
+
+        public async Task<IEnumerable<ProfessorResponse>> GetAsync()
         {
-            var professor = _repository.Get(id);
-
-            if (professor is null)
-            {
-                NotificarErro("Professor não encontrado");
-                return;
-            }
-
-            _repository.Delete(professor);
-        }
-
-        public IEnumerable<ProfessorResponse> Get()
-        {
-            var list = _repository.Get();
+            var list = await _repository.GetAsync();
 
             return list.Select(d => Map(d));
         }
 
-        public ProfessorResponse Get(Guid id)
+        public async Task<ProfessorResponse> GetAsync(Guid id)
         {
             if (Guid.Empty == id)
             {
@@ -47,7 +44,7 @@ namespace IEscola.Application.Services
                 return default;
             }
 
-            var professor = _repository.Get(id);
+            var professor = await _repository.GetAsync(id);
 
             if (professor is null)
             {
@@ -59,21 +56,55 @@ namespace IEscola.Application.Services
             return Map(professor);
         }
 
-        public ProfessorResponse Insert(ProfessorInsertRequest professorRequest)
+        public async Task<ProfessorFullResponse> GetFullAsync(Guid id)
+        {
+            if (Guid.Empty == id)
+            {
+                NotificarErro("id inválido");
+                return default;
+            }
+
+            var professor = await _repository.GetAsync(id);
+
+            if (professor is null)
+            {
+                NotificarErro("Professor não encontrado");
+                return default;
+            };
+
+            var tasks = new Task[]
+            {
+                Task.Run(async () => professor.Disciplina = await _disciplinaRepository.GetAsync(professor.DisciplinaId)),
+                Task.Run(async () => professor.Alunos = await _alunoRepository.GetByProfessorIdAsync(id))
+            };
+            Task.WaitAll(tasks);
+
+            // Retornar
+            return MapFull(professor);
+        }
+
+
+        public async Task<ProfessorResponse> InsertAsync(ProfessorInsertRequest professorRequest)
         {
             /// Validar a professor
             if (string.IsNullOrWhiteSpace(professorRequest.Nome))
                 NotificarErro("Nome não preenchido");
 
-            if (string.IsNullOrWhiteSpace(professorRequest.Cpf)) // TODO: Validar o CPF
+            // TODO: Validar o CPF
+            if (string.IsNullOrWhiteSpace(professorRequest.Cpf))
                 NotificarErro("Cpf não preenchido");
+
+            // Professor deve ser maior que 18 ano
+            if (professorRequest.DataNascimento >= DateTime.Today.AddYears(-18))
+                NotificarErro("Data de nascimento inválida");
 
             if (TemNotificacao())
                 return default;
 
             // Mapear para o objeto de domínio
             var id = Guid.NewGuid();
-            var professor = new Professor(id, professorRequest.Nome, professorRequest.Cpf, professorRequest.DataNascimento)
+            var professor = new Professor(id, professorRequest.Nome, professorRequest.Cpf, 
+                professorRequest.DataNascimento, professorRequest.DisciplinaId)
             {
                 Tratamento = professorRequest.Tratamento,
                 DataUtimaAlteracao = DateTime.UtcNow,
@@ -82,13 +113,15 @@ namespace IEscola.Application.Services
             };
 
             // Processar
-            _repository.Insert(professor);
+            await _repository.InsertAsync(professor);
 
             // Retornar
             return Map(professor);
         }
 
-        public ProfessorResponse Update(ProfessorUpdateRequest professorRequest)
+
+
+        public async Task<ProfessorResponse> UpdateAsync(ProfessorUpdateRequest professorRequest)
         {
 
             if (professorRequest.Id == Guid.Empty)
@@ -98,18 +131,24 @@ namespace IEscola.Application.Services
             if (string.IsNullOrWhiteSpace(professorRequest.Nome))
                 NotificarErro("Nome não preenchido");
 
-            if (string.IsNullOrWhiteSpace(professorRequest.Cpf)) // TODO: Validar o CPF
+            // TODO: Validar o CPF
+            if (string.IsNullOrWhiteSpace(professorRequest.Cpf))
                 NotificarErro("Cpf não preenchido");
+
+            // Professor deve ser maior que 18 ano
+            if (professorRequest.DataNascimento >= DateTime.Today.AddYears(-18))
+                NotificarErro("Data de nascimento inválida");
 
             if (TemNotificacao())
                 return default;
 
             // Validar se a disciplina do Id existe
-            var disc = Get(professorRequest.Id);
+            var disc = await GetAsync(professorRequest.Id);
             if (disc is null) return default;
 
             // Mapear para o objeto de domínio
-            var professor = new Professor(professorRequest.Id, professorRequest.Nome, professorRequest.Cpf, professorRequest.DataNascimento)
+            var professor = new Professor(professorRequest.Id, professorRequest.Nome, professorRequest.Cpf, 
+                professorRequest.DataNascimento, professorRequest.DisciplinaId)
             {
                 Tratamento = professorRequest.Tratamento,
                 DataUtimaAlteracao = DateTime.UtcNow,
@@ -123,10 +162,23 @@ namespace IEscola.Application.Services
                 professor.Inativar();
 
             // Processar
-            _repository.Update(professor);
+            await _repository.UpdateAsync(professor);
 
             // Retornar
             return Map(professor);
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var professor = await _repository.GetAsync(id);
+
+            if (professor is null)
+            {
+                NotificarErro("Professor não encontrado");
+                return;
+            }
+
+            await _repository.DeleteAsync(professor);
         }
 
         #region Private Methods
@@ -140,6 +192,35 @@ namespace IEscola.Application.Services
                 DataNascimento = professor.DataNascimento,
                 Tratamento = professor.Tratamento,
                 Ativo = professor.Ativo
+            };
+        }
+        private static ProfessorFullResponse MapFull(Professor professor)
+        {
+            return new ProfessorFullResponse
+            {
+                Id = professor.Id,
+                Nome = professor.Nome,
+                Cpf = professor.Cpf,
+                DataNascimento = professor.DataNascimento,
+                Tratamento = professor.Tratamento,
+                Ativo = professor.Ativo,
+                Disciplina = new DisciplinaResponse
+                {
+                    Id = professor.DisciplinaId,
+                    Nome = professor.Disciplina.Nome,
+                    Descricao = professor.Disciplina.Descricao,
+                    Ativo = professor.Disciplina.Ativo
+                },
+
+                Alunos = professor.Alunos.Select(a => new AlunoResponse
+                {
+                    Id = a.Id,
+                    Nome = a.Nome,
+                    NumeroMatricula = a.NumeroMatricula,
+                    DataNascimento = a.DataNascimento,
+                    ProfessorId = a.ProfessorId,
+                    Ativo = a.Ativo
+                })
             };
         }
         #endregion

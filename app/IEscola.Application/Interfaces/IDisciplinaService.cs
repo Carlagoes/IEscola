@@ -2,16 +2,17 @@
 using IEscola.Application.HttpObjects.Disciplina.Response;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IEscola.Application.Interfaces
 {
     public interface IDisciplinaService
     {
-        IEnumerable<DisciplinaResponse> Get();
-        DisciplinaResponse Get(Guid id);
-        DisciplinaResponse Insert(DisciplinaInsertRequest disciplinaRequest);
-        DisciplinaResponse Update(DisciplinaUpdateRequest disciplinaRequest);
-        void Delete(Guid id);
+        Task<IEnumerable<DisciplinaResponse>> GetAsync();
+        Task<DisciplinaResponse> GetAsync(Guid id);
+        Task<DisciplinaResponse> InsertAsync(DisciplinaInsertRequest disciplina);
+        Task<DisciplinaResponse> UpdateAsync(DisciplinaUpdateRequest disciplina);
+        Task DeleteAsync(Guid id);
 
     }
 }
