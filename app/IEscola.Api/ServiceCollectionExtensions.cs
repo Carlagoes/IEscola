@@ -2,6 +2,7 @@
 using IEscola.Application.Interfaces;
 using IEscola.Application.Services;
 using IEscola.Domain.Interfaces;
+using IEscola.Infra.API;
 using IEscola.Infra.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,17 +24,22 @@ namespace IEscola.Api
             services.AddScoped<IDisciplinaService, DisciplinaService>();
             services.AddScoped<IProfessorService, ProfessorService>();
             services.AddScoped<IAlunoService, AlunoService>();
+            services.AddScoped<IEnderecoService, EnderecoService>();
 
             //Repositories
             services.AddScoped<IDisciplinaRepository, DisciplinaRepository>();
             services.AddSingleton<IProfessorRepository, ProfessorRepository>();
             services.AddSingleton<IAlunoRepository, AlunoRepository>();
+            services.AddSingleton<IEnderecoRepository, EnderecoRepository>();
 
             //Outros Objetos
             services.AddScoped<INotificador, Notificador>();
 
             //ActionFilter
             services.AddScoped<AuthorizationActionFilterAsyncAttribute>();
+
+            //ConsultaViaCepApi
+            services.AddHttpClient<IViaCepApi, ViaCepApi>();
 
             //ANOTAÇÕES:
             //vida util dos objetos na memoria -> qd a aplicação subir

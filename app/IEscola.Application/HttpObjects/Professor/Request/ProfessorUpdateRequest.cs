@@ -30,7 +30,7 @@ namespace IEscola.Application.HttpObjects.Professor.Request
         [DataType(DataType.DateTime, ErrorMessage = "DataNascimento em formato inválido")]
         public DateTime DataNascimento { get; set; }
 
-        [Required(ErrorMessage = "DisciplinaIdId não preenchido.")]
+        [Required(ErrorMessage = "DisciplinaId não preenchido.")]
         public Guid DisciplinaId { get; set; }
 
     }
